@@ -74,7 +74,7 @@ module system_monitor(
     reg btnB_r2;
 
     reg pressed;
-    reg [3:0] brightness = 4'd3;
+    reg [3:0] brightness = 4'd0;
     reg [1:0] blockBrightnessReceive;
     
     reg request_buttons  = 1'b0;
@@ -195,7 +195,7 @@ module system_monitor(
         else
             lcdcount <= 'd0;
 
-    assign LCD_PWM = LCD_INIT_DONE&LCD_BACKLIGHT_INIT ? (lcdcount <= {brightness[3:0], 4'd0}) : 1'd0;
+    assign LCD_PWM = (lcdcount <= {brightness[3:0], 4'd0});
 
 
     // 8.388608Mhz clock -> ~119.2ns
