@@ -17,7 +17,7 @@ module dpram_difV #(
     input                       wren_b
 );
 
-    reg [data_widthA-1:0]   myramdA [2047:0];
+    reg [data_widthA-1:0]   myramdA [2303:0];
     
     initial
     begin
