@@ -125,9 +125,9 @@ ENDC
     dec d ; Prev. dec + this one takes d = 3 to d = 1
 
     ; Nintendo Logo
-    ld a, $37    ; Offset into tile map? d is now 1 though?
+    ld a, $38    ; Offset into tile map? d is now 1 though?
     ld l, $a7
-    ld bc, $0101 ; 1 row, 7 columns for Nintendo logo
+    ld bc, $0107 ; 1 row, 7 columns for Nintendo logo
     jr .tilemapRowLoop
 
 .write_with_palette
@@ -193,9 +193,9 @@ ENDC
 .doAnimation
     call DoIntroAnimation
 
-    ld a, 1 ; frames to wait after playing the chime
+    ld a, 48 ; frames to wait after playing the chime
     ldh [WaitLoopCounter], a
-    ld b, 1 ; frames to wait before playing the chime
+    ld b, 4 ; frames to wait before playing the chime
     call WaitBFrames
 
     ; Play first sound
@@ -209,7 +209,7 @@ ENDC
 
 .waitLoop
     call GetInputPaletteIndex
-    ;call WaitFrame
+    call WaitFrame
     ld hl, WaitLoopCounter
     dec [hl]
     jr nz, .waitLoop
@@ -335,7 +335,7 @@ ChecksumsEnd:
 
 PalettePerChecksum:
 MACRO palette_index ; palette, flags
-    db ((\1)) | (\2) ; | $80 means game requires DMG boot tilemap
+    db (0) | (\2) ; | $80 means game requires DMG boot tilemap
 ENDM
     palette_index 0, 0  ; Default Palette
     palette_index 4, 0  ; ALLEY WAY
@@ -444,7 +444,7 @@ ENDM
 MACRO raw_palette_comb ; Obj0, Obj1, Bg
     db (\1) * 2, (\2) * 2, (\3) * 2
 ENDM
-    palette_comb  4,  4, 29 ;  0, Right + A
+    palette_comb 31, 31, 31 ;  0, Right + A + B
     palette_comb 18, 18, 18 ;  1, Right
     palette_comb 20, 20, 20 ;  2
     palette_comb 24, 24, 24 ;  3, Down + A
@@ -495,8 +495,8 @@ ENDM
     palette_comb  4,  3, 28 ; 48, Left
     palette_comb 28,  3,  6 ; 49, Down + B
     palette_comb  4, 28, 29 ; 50
-    palette_comb 30, 30, 30 ; 51, Right + A + B 
-    palette_comb 31, 31, 31 ; 52, Left + A + B
+    palette_comb  4,  4, 29 ; 51, Right + A
+    palette_comb 30, 30, 30 ; 52, Left + A + B
 
 Palettes:
     dw $7FFF, $32BF, $00D0, $0000 ;  0
@@ -529,16 +529,17 @@ Palettes:
     dw $0000, $4200, $037F, $7FFF ; 27
     dw $7FFF, $7E8C, $7C00, $0000 ; 28
     dw $7FFF, $1BEF, $6180, $0000 ; 29
-    dw $0E10, $2DCA, $3166, $24E3 ; 30, dmg
-    dw $6BFC, $3B11, $2DA7, $1061 ; 31, bgb
+    dw $0E10, $2DCA, $3166, $24E3 ; 30, Chromatic DMG
+    ; dw $6BFC, $3B11, $2DA7, $1061 ; 31, Chromatic BGB
+    dw $0252, $15E9, $2185, $0CE1 ; 31, DMG Bright
 
-    
+
 KeyCombinationPalettes:
     db 1  * 3  ; Right
     db 48 * 3  ; Left
     db 5  * 3  ; Up
     db 8  * 3  ; Down
-    db 0  * 3  ; Right + A
+    db 51 * 3  ; Right + A
     db 40 * 3  ; Left + A
     db 43 * 3  ; Up + A
     db 3  * 3  ; Down + A
@@ -546,14 +547,14 @@ KeyCombinationPalettes:
     db 7  * 3  ; Left + B
     db 28 * 3  ; Up + B
     db 49 * 3  ; Down + B
-    db 51 * 3  ; Right + A + B
+    db 0  * 3  ; Right + A + B
     db 52 * 3  ; Left + A + B
 
 TrademarkSymbol:
     db $3c,$42,$b9,$a5,$b9,$a5,$42,$3c
 
-;CGBLogo:
-;    incbin "CGB_logo.rle"
+CGBLogo:
+    incbin "CGB_logo.rle"
 
 
 AnimationColors:
@@ -604,12 +605,15 @@ WaitFrame:
 
 WaitBFrames:
     call GetInputPaletteIndex
-    ;call WaitFrame
+    call WaitFrame
     dec b
     jr nz, WaitBFrames
     ret
 
 PlaySound:
+    ldh [rNR13], a
+    ld a, $87
+    ldh [rNR14], a
     ret
 
 ClearMemoryPage8000:
@@ -658,7 +662,7 @@ ReadCGBLogoHalfTile:
 
 LoadTileset:
 ; Copy CGB Logo
-    ld de, 0
+    ld de, CGBLogo
     ld hl, $8080
 .cgbLogoLoop
     ld a, [de]
@@ -811,9 +815,9 @@ Preboot:
     dec c
     jr nz, .frameLoop
 
-    ;call WaitFrame
+    call WaitFrame
     call LoadPalettesFromHRAM
-    ;call WaitFrame
+    call WaitFrame
     dec b
     jr nz, .fadeLoop
 
@@ -1141,7 +1145,7 @@ ChangeAnimationPalette:
     ldh [BgPalettes + 5], a ; Third color, first palette
 
 
-    ;call WaitFrame
+    call WaitFrame
     call LoadPalettesFromHRAM
     ; Delay the wait loop while the user is selecting a palette
     ld a, 48
@@ -1162,7 +1166,7 @@ ReplaceColorInAllPalettes:
 
 LoadDMGTilemap:
     push af
-    ;call WaitFrame
+    call WaitFrame
     ld a, $19      ; Trademark symbol
     ld [$9910], a ; ... put in the superscript position
     ld hl,$992f   ; Bottom right corner of the logo
@@ -1185,7 +1189,7 @@ CheckAGB:
     ret
 
 CheckFastBoot:
-    ld a, 2
+    ld a, 0
     bit 1, a
     ret
 
