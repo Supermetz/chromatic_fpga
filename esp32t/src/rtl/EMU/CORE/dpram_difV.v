@@ -5,7 +5,7 @@ module dpram_difV #(
     parameter   data_widthA =   8,
     parameter   addr_widthB =   8,
     parameter   data_widthB =   8,
-    parameter   init = "BootROMs/cgb_boot.hex"
+    parameter   init = " "
     )(  
     input   clock,
 
@@ -17,7 +17,7 @@ module dpram_difV #(
     input                       wren_b
 );
 
-    reg [data_widthA-1:0]   myramdA [2303:0];
+    reg [data_widthA-1:0]   myramdA [2303:0] /* synthesis syn_romstyle = "distributed_rom" */;
     
     initial
     begin
