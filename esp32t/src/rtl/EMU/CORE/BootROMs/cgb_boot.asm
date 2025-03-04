@@ -119,7 +119,7 @@ ELSE
     ldh [rVBK], a
     pop af
     ldi [hl], a
-    add d ; d = 3 for SameBoy logo, d = 1 for Nintendo logo
+    add d ; d = 3 for GameBoy logo, d = 1 for Nintendo logo
     dec c
     jr nz, .tilemapRowLoop
     sub 47
@@ -504,11 +504,10 @@ ENDM
     palette_comb  4,  3, 28 ; 48, Left
     palette_comb 28,  3,  6 ; 49, Down + B
     palette_comb  4, 28, 29 ; 50
-    ; SameBoy "Exclusives"
-    palette_comb 30, 30, 30 ; 51, Right + A + B, CGA
-    palette_comb 31, 31, 31 ; 52, Left + A + B, DMG LCD
-    palette_comb 28,  4,  1 ; 53, Up + A + B
-    palette_comb  0,  0,  2 ; 54, Down + A + B
+    palette_comb 31, 31, 31 ; 51, Right + A + B, DMG
+    palette_comb  5,  5,  5 ; 52, Left + A + B, GBP
+    palette_comb 30, 30, 30 ; 53, Up + A + B, GBL
+    palette_comb  0,  0,  2 ; 54, Down + A + B, SameBoy "Exclusive"
 
 Palettes:
     dw $7FFF, $32BF, $00D0, $0000 ;  0
@@ -516,7 +515,7 @@ Palettes:
     dw $7FFF, $6E31, $454A, $0000 ;  2
     dw $7FFF, $1BEF, $0200, $0000 ;  3
     dw $7FFF, $421F, $1CF2, $0000 ;  4
-    dw $7FFF, $5294, $294A, $0000 ;  5
+    dw $3E70, $31ED, $1D69, $08C4 ;  5, GBP from https://redd.it/1j2l9h1
     dw $7FFF, $03FF, $012F, $0000 ;  6
     dw $7FFF, $03EF, $01D6, $0000 ;  7
     dw $7FFF, $42B5, $3DC8, $0000 ;  8
@@ -541,9 +540,8 @@ Palettes:
     dw $0000, $4200, $037F, $7FFF ; 27
     dw $7FFF, $7E8C, $7C00, $0000 ; 28
     dw $7FFF, $1BEF, $6180, $0000 ; 29
-    ; SameBoy "Exclusives"
-    dw $7FFF, $7FEA, $7D5F, $0000 ; 30, CGA 1
-    dw $4778, $3290, $1D87, $0861 ; 31, DMG LCD
+    dw $43E0, $3B40, $2A60, $1DC0 ; 30, GBL from https://redd.it/1j2l9h1
+    dw $01EF, $018B, $0147, $00E2 ; 31, DMG from https://redd.it/1j2l9h1
 
 KeyCombinationPalettes:
 MACRO palette_comb_id ; PaletteCombinations ID
@@ -561,7 +559,6 @@ ENDM
     palette_comb_id  7 ; 10, Left + B
     palette_comb_id 28 ; 11, Up + B
     palette_comb_id 49 ; 12, Down + B
-    ; SameBoy "Exclusives"
     palette_comb_id 51 ; 13, Right + A + B
     palette_comb_id 52 ; 14, Left + A + B
     palette_comb_id 53 ; 15, Up + A + B
@@ -581,7 +578,7 @@ TrademarkSymbol:
     popo
 TrademarkSymbolEnd:
 
-SameBoyLogo:
+GameBoyLogo:
     incbin "CGB_logo.pb12"
 
 
@@ -694,7 +691,7 @@ ReadCGBLogoHalfTile:
 ; (based on PB8 codec, 2019 Damian Yerrick)
 
 LoadTileset:
-    ld hl, SameBoyLogo         ; source
+    ld hl, GameBoyLogo         ; source
     ld de, _VRAM + $80 - 1     ; destination
     ld c, (128 * 24) / (8 * 8) ; length
 .refill
@@ -707,7 +704,7 @@ LoadTileset:
     ; bypassing A and avoiding spilling registers to the stack.
     ld b, [hl]
     dec b
-    jr z, .sameboyLogoEnd
+    jr z, .gameboyLogoEnd
     inc b
     inc hl
 
@@ -759,7 +756,7 @@ LoadTileset:
     jr .refill
 
 ; End PB12 decoding.  The rest uses HL as the destination
-.sameboyLogoEnd
+.gameboyLogoEnd
     ld h, d
     ld l, $80
 
