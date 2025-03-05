@@ -341,9 +341,9 @@ ChecksumsEnd:
 PalettePerChecksum:
 MACRO palette_index ; palette[, flags]
     IF _NARG == 1
-        db (\1)
+        db (0)
     ELSE
-        db (\1) | (\2) ; flag $80 means game requires DMG boot tilemap
+        db (0) | (\2) ; flag $80 means game requires DMG boot tilemap
     ENDC
 ENDM
     palette_index  0 ; Default Palette
