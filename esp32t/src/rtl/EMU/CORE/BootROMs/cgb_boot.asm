@@ -453,7 +453,7 @@ ENDM
 MACRO raw_palette_comb ; Obj0, Obj1, Bg
     db (\1) * 2, (\2) * 2, (\3) * 2
 ENDM
-    palette_comb  4,  4, 29 ;  0, Right + A
+    palette_comb 31, 31, 31 ;  0, Right + A + B, DMG
     palette_comb 18, 18, 18 ;  1, Right
     palette_comb 20, 20, 20 ;  2
     palette_comb 24, 24, 24 ;  3, Down + A
@@ -504,7 +504,7 @@ ENDM
     palette_comb  4,  3, 28 ; 48, Left
     palette_comb 28,  3,  6 ; 49, Down + B
     palette_comb  4, 28, 29 ; 50
-    palette_comb 31, 31, 31 ; 51, Right + A + B, DMG
+    palette_comb  4,  4, 29 ; 51, Right + A
     palette_comb  5,  5,  5 ; 52, Left + A + B, GBP
     palette_comb 30, 30, 30 ; 53, Up + A + B, GBL
     palette_comb  0,  0,  2 ; 54, Down + A + B, SameBoy "Exclusive"
@@ -551,7 +551,7 @@ ENDM
     palette_comb_id 48 ;  2, Left
     palette_comb_id  5 ;  3, Up
     palette_comb_id  8 ;  4, Down
-    palette_comb_id  0 ;  5, Right + A
+    palette_comb_id 51 ;  5, Right + A
     palette_comb_id 40 ;  6, Left + A
     palette_comb_id 43 ;  7, Up + A
     palette_comb_id  3 ;  8, Down + A
@@ -559,7 +559,7 @@ ENDM
     palette_comb_id  7 ; 10, Left + B
     palette_comb_id 28 ; 11, Up + B
     palette_comb_id 49 ; 12, Down + B
-    palette_comb_id 51 ; 13, Right + A + B
+    palette_comb_id  0 ; 13, Right + A + B
     palette_comb_id 52 ; 14, Left + A + B
     palette_comb_id 53 ; 15, Up + A + B
     palette_comb_id 54 ; 16, Down + A + B
