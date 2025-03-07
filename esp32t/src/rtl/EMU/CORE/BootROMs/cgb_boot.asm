@@ -903,13 +903,13 @@ ENDC
     bit 7, a
 
     ldh [rKEY0], a ; write CGB compatibility byte, CGB mode
-    ldh a, [hTitleChecksum]
-    ld b, a
+    ; ldh a, [hTitleChecksum]
+    ; ld b, a
 
-    jr z, .skipDMGForCGBCheck
-    ldh a, [hInputPalette]
-    and a
-    jr nz, .emulateDMGForCGBGame
+    ; jr z, .skipDMGForCGBCheck
+    ; ldh a, [hInputPalette]
+    ; and a
+    ; jr nz, .emulateDMGForCGBGame
 .skipDMGForCGBCheck
 IF DEF(AGB)
     ; Set registers to match the original AGB-CGB boot
