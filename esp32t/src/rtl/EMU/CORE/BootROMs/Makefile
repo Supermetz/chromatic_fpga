@@ -27,7 +27,6 @@ PB12_COMPRESS := pb12$(EXESUFFIX)
 RGBASM  := $(RGBDS)rgbasm
 RGBLINK := $(RGBDS)rgblink
 RGBGFX  := $(RGBDS)rgbgfx
-RGBGFX_FLAGS := $(if $(filter $(shell echo 'println __RGBDS_MAJOR__ || (!__RGBDS_MAJOR__ && __RGBDS_MINOR__ > 5)' | $(RGBASM) -), $$0), -h -u, -Z -u -c embedded)
 
 .PHONY : default
 default: clean bootroms vmem
@@ -37,12 +36,12 @@ bootroms: cgb_boot.bin cgb_boot_fast.bin
 
 %.2bpp: %.png
 	-@$(MKDIR) -p $(dir $@)
-	$(RGBGFX) $(RGBGFX_FLAGS) -o $@ $<
+	$(RGBGFX) -Z -c embedded -o $@ $<
 
 %.pb12: %.2bpp $(PB12_COMPRESS)
 	-@$(MKDIR) -p $(dir $@)
 	"$(realpath $(PB12_COMPRESS))" < $< > $@
-	
+
 $(PB12_COMPRESS): pb12.c
 	-@$(MKDIR) -p $(dir $@)
 	$(NATIVE_CC) -std=c99 -Wall -Werror $< -o $@
