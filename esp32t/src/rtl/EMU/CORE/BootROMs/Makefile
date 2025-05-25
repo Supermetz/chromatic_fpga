@@ -48,7 +48,7 @@ $(PB12_COMPRESS): pb12.c
 
 %.bin: %.asm CGB_logo.pb12
 	-@$(MKDIR) -p $(dir $@)
-	$(RGBASM) $(RGBASM_FLAGS) -o $@.tmp $<
+	$(RGBASM) -o $@.tmp $<
 	$(RGBLINK) -x -o $@ $@.tmp
 	@rm $@.tmp
 
@@ -59,8 +59,10 @@ vmem:
 
 .PHONY : clean
 clean:
-	rm -f $(PB12_COMPRESS)
-	rm -f cgb_boot.bin
-	rm -f cgb_boot.mif.vmem
-	rm -f cgb_boot_fast.bin
-	rm -f cgb_boot_fast.mif.vmem
+	@rm -f $(PB12_COMPRESS)
+	@rm -f cgb_boot.bin
+	@rm -f cgb_boot.mif.vmem
+	@rm -f cgb_boot_fast.bin
+	@rm -f cgb_boot_fast.mif.vmem
+	@rm -f CGB_logo.pb12
+	@rm -f CGB_logo.2bpp
